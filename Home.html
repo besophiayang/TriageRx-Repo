@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Exo&display=swap');
+
+        body {
+            font-family: 'Exo', sans-serif;
+            background-color: #1B0051;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1B0051;
+            padding: 30px; /* Increase padding to make the navigation bar thicker */
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav li {
+            display: inline;
+            margin-right: 50px; /* Increase margin to make the tabs further apart */
+        }
+
+        nav a {
+            color: #d2d2d2;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center; /* Center align the logo */
+            align-items: center;
+            flex: 1;
+        }
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo img {
+            height: 100px;
+        }
+
+        .chatbox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            width: 80%; /* Set width to 80% */
+            max-width: 1150px; /* Set maximum width if needed */
+            height: 500px;
+            border-radius: 10px;
+            overflow-y: auto;
+            opacity: 0.8;
+        }
+
+        .chatbox-content {
+            height: calc(100% - 60px); /* Subtract 60px to account for input field height and padding */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+            padding: 0 15px; /* Add padding of 15px on both sides */
+        }
+
+
+        .chatbox-content::-webkit-scrollbar {
+            width: 6px; /* Set the width of the scrollbar */
+            margin-right: 4px; /* Adjust the margin */
+        }
+
+        .chatbox-content::-webkit-scrollbar-thumb {
+            background-color: #888; /* Set the color of the scrollbar thumb */
+            border-radius: 3px; /* Round the corners of the scrollbar thumb */
+        }
+
+        .input-field {
+            position: relative;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .input-field input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: none;
+            border-radius: 10px; /* Round the corners */
+            outline: none;
+            opacity: 0.9;
+            box-sizing: border-box; /* Include padding in the width calculation */
+        }
+
+
+        .chat-message {
+            margin-top: 10px; /* Add spacing between messages */
+            margin-left: 15px; /* Start messages 15px away from the left side */
+            margin-right: 15px; /* Start messages 15px away from the right side */
+            display: flex;
+            justify-content: flex-end; /* Align user messages to the right */
+        }
+
+        .user-message {
+            text-align: right;
+            background-color: #534769; /* Set the background color to red */
+            color: white; /* Set the text color to white */
+            padding: 10px; /* Add padding to the bubble */
+            border-radius: 10px; /* Round the corners of the bubble */
+            width: fit-content; /* Adjust the width based on the content */
+            max-width: 80%; /* Set maximum width to 80% of the chatbox width */
+            white-space: pre-wrap; /* Preserve white space and wrap long text */
+            word-break: break-word; /* Break long words */
+            margin-left: auto; /* Move the user messages to the right */
+            margin-right: 15px; /* Start messages 15px away from the right side */
+            opacity: 0.7;
+        }
+
+
+        .bot-message {
+            text-align: left;
+            background-color: #888; /* Set the background color to grey */
+            color: white; /* Set the text color to white */
+            padding: 10px; /* Add padding to the bubble */
+            border-radius: 10px; /* Round the corners of the bubble */
+            width: fit-content; /* Adjust the width based on the content */
+            max-width: 80%; /* Set maximum width to 80% of the chatbox width */
+            white-space: pre-wrap; /* Preserve white space and wrap long text */
+            word-break: break-word; /* Break long words */
+            margin-right: auto; /* Move the bot messages to the left */
+            margin-left: 15px; /* Start messages 15px away from the left side */
+            opacity: 0.7;
+        }
+
+        .typing-animation {
+            margin-right: auto;
+            margin-left: 15px;
+            padding: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #888;
+            animation: typing 1s steps(5, end) infinite;
+        }
+
+        @keyframes typing {
+            0% { background-color: #888; }
+            50% { background-color: #fff; }
+            100% { background-color: #888; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="About.html">About</a></li>
+            </ul>
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="TriageRx (1).png" alt="Logo">
+                    <!-- Replace "logo.png" with the path to your logo image file -->
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="chatbox">
+        <div class="chatbox-content" id="chatlog"></div>
+        <div class="input-field">
+            <input type="text" id="userInput" placeholder="Please respond with a yes or no..." onkeydown="handleKeyPress(event)">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.12.0"></script>
+    <script>
+        // Calculate and set the width of the chatbox dynamically
+        function setChatboxWidth() {
+            const chatbox = document.querySelector('.chatbox');
+            const screenWidth = window.innerWidth;
+            const chatboxWidth = screenWidth * 0.8; // Set width to 80% of the screen width
+            chatbox.style.width = `${chatboxWidth}px`;
+        }
+
+        window.addEventListener('DOMContentLoaded', setChatboxWidth);
+        window.addEventListener('resize', setChatboxWidth);
+
+            const questions = [
+        'Are you experiencing itchiness?',
+        'Do you have a skin rash?',
+        'Are there nodal skin eruptions present?',
+        'Are you continuously sneezing?',
+        'Are you shivering?',
+        'Are you experiencing chills?',
+        'Do you have joint pain?',
+        'Are you experiencing stomach pain?',
+        'Are you suffering from acidity?',
+        'Do you have ulcers on your tongue?',
+        'Are you experiencing muscle wasting?',
+        'Are you vomiting?',
+        'Do you have a burning sensation during micturition?',
+        'Are you spotting during urination?',
+        'Are you feeling fatigued?',
+        'Have you gained weight recently?',
+        'Are you feeling anxious?',
+        'Are your hands and feet cold?',
+        'Are you experiencing mood swings?',
+        'Have you lost weight recently?',
+        'Are you feeling restless?',
+        'Are you feeling lethargic?',
+        'Do you have patches in your throat?',
+        'Is your sugar level irregular?',
+        'Are you coughing?',
+        'Do you have a high fever?',
+        'Do you have sunken eyes?',
+        'Are you experiencing breathlessness?',
+        'Are you sweating excessively?',
+        'Are you dehydrated?',
+        'Are you suffering from indigestion?',
+        'Do you have a headache?',
+        'Is your skin yellowish?',
+        'Is your urine dark in color?',
+        'Are you feeling nauseous?',
+        'Have you lost your appetite?',
+        'Do you have pain behind your eyes?',
+        'Do you have back pain?',
+        'Are you constipated?',
+        'Are you experiencing abdominal pain?',
+        'Are you suffering from diarrhoea?',
+        'Do you have a mild fever?',
+        'Is your urine yellow?',
+        'Are your eyes yellowing?',
+        'Are you suffering from acute liver failure?',
+        'Are you experiencing fluid overload?',
+        'Is your stomach swelling?',
+        'Are your lymph nodes swollen?',
+        'Are you feeling malaise?',
+        'Is your vision blurred or distorted?',
+        'Are you producing phlegm?',
+        'Is your throat irritated?',
+        'Are your eyes red?',
+        'Are you experiencing sinus pressure?',
+        'Do you have a runny nose?',
+        'Are you experiencing congestion?',
+        'Do you have chest pain?',
+        'Are your limbs weak?',
+        'Is your heart rate fast?',
+        'Do you experience pain during bowel movements?',
+        'Do you have pain in the anal region?',
+        'Is your stool bloody?',
+        'Is your anus irritated?',
+        'Do you have neck pain?',
+        'Are you feeling dizzy?',
+        'Are you experiencing cramps?',
+        'Are you bruising easily?',
+        'Are you obese?',
+        'Are your legs swollen?',
+        'Are your blood vessels swollen?',
+        'Is your face and eyes puffy?',
+        'Is your thyroid enlarged?',
+        'Are your nails brittle?',
+        'Are your extremities swollen?',
+        'Are you feeling excessively hungry?',
+        'Have you had any extra marital contacts?',
+        'Are your lips dry and tingling?',
+        'Is your speech slurred?',
+        'Do you have knee pain?',
+        'Do you have hip joint pain?',
+        'Are your muscles weak?',
+        'Is your neck stiff?',
+        'Are your joints swelling?',
+        'Are you experiencing movement stiffness?',
+        'Are you experiencing spinning movements?',
+        'Have you lost balance?',
+        'Are you feeling unsteady?',
+        'Is one side of your body weak?',
+        'Have you lost your sense of smell?',
+        'Are you experiencing bladder discomfort?',
+        'Does your urine have a foul smell?',
+        'Do you continuously feel the need to urinate?',
+        'Are you passing gases?',
+        'Are you experiencing internal itching?',
+        'Do you have a toxic look (typhos)?',
+        'Are you feeling depressed?',
+        'Are you feeling irritable?',
+        'Are you experiencing muscle pain?',
+        'Has your sensorium altered?',
+        'Do you have red spots over your body?',
+        'Do you have belly pain?',
+        'Is your menstruation abnormal?',
+        'Do you have dischromic patches?',
+        'Are your eyes watering?',
+        'Has your appetite increased?',
+        'Are you urinating excessively (polyuria)?',
+        'Is there a family history of similar symptoms?',
+        'Is your sputum mucoid?',
+        'Is your sputum rusty?',
+        'Are you having trouble concentrating?',
+        'Are you experiencing visual disturbances?',
+        'Have you received a blood transfusion recently?',
+        'Have you received unsterile injections recently?',
+        'Are you in a coma?',
+        'Are you experiencing stomach bleeding?',
+        'Is your abdomen distended?',
+        'Do you have a history of alcohol consumption?',
+        'Are you experiencing fluid overload?',
+        'Is there blood in your sputum?',
+        'Are the veins on your calf prominent?',
+        'Are you experiencing palpitations?',
+        'Is walking painful for you?',
+        'Do you have pus filled pimples?',
+        'Do you have blackheads?',
+        'Are you scurring?',
+        'Is your skin peeling?',
+        'Do you have a silver-like dusting on your skin?',
+        'Are there small dents in your nails?',
+        'Are your nails inflamed?',
+        'Do you have blisters?',
+        'Do you have a red sore around your nose?',
+        'Is there a yellow crust oozing from your skin?'
+    ];
+        let currentQuestionIndex = 0;
+        let newDataPoint = [];
+
+        let enableGptChat = false;
+
+        async function handleKeyPress(event) {
+            if (event.keyCode === 13) {
+                const userInput = document.getElementById('userInput');
+                const message = userInput.value.trim();
+                if (enableGptChat) {
+                    // Chat with GPT-3 model
+                    const gptResponse = await getGptResponse(message);
+
+                    // Display GPT-3.5-turbo response
+                    const botMessage = document.createElement('div');
+                    botMessage.classList.add('chat-message', 'bot-message');
+                    botMessage.textContent = gptResponse;
+                    chatLog.insertBefore(botMessage, chatLog.firstChild);
+                } else {
+                    sendMessage();
+                    if (currentQuestionIndex < questions.length) {
+                        const chatLog = document.getElementById('chatlog');
+                        const typingAnimation = document.createElement('div');
+                        typingAnimation.classList.add('chat-message', 'typing-animation');
+                        chatLog.insertBefore(typingAnimation, chatLog.firstChild);
+
+                        setTimeout(function() {
+                            chatLog.removeChild(typingAnimation);
+                            sendBotMessage(questions[currentQuestionIndex]);
+                            currentQuestionIndex++;
+                        }, 700); //Add delay
+                    } else if (currentQuestionIndex === questions.length) {
+                        await run().catch(error => console.log(error));
+                        enableGptChat = true; // Enable GPT-3 chat after run() has completed
+                    }
+                }
+            }
+        }
+
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+
+            if (message !== '') {
+                const chatLog = document.getElementById('chatlog');
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('chat-message', 'user-message');
+                userMessage.textContent = message;
+                chatLog.insertBefore(userMessage, chatLog.firstChild); // Insert new message at the top
+                userInput.value = '';
+                userInput.focus();
+                if(message === 'yes' || message === 'Yes' || message === 'YES' || message === 'Y' || message === 'y') {
+                    newDataPoint.push(1);
+                    console.log(message);
+                    console.log(newDataPoint);
+                } else if(message === 'no' || message === 'No' || message === 'NO' || message === 'N' || message === 'n'){
+                    newDataPoint.push(0);
+                    console.log(message);
+                    console.log(newDataPoint);
+                } else {
+                    sendBotMessage('Please answer with yes or no.');
+                    currentQuestionIndex--;
+                }
+            }
+        }
+
+        function sendBotMessage(message) {
+            const chatLog = document.getElementById('chatlog');
+            const botMessage = document.createElement('div');
+            botMessage.classList.add('chat-message', 'bot-message');
+            botMessage.textContent = message;
+            chatLog.insertBefore(botMessage, chatLog.firstChild); // Insert new message at the top
+        }
+
+        window.onload = function() {
+            if (currentQuestionIndex < questions.length) {
+                const chatLog = document.getElementById('chatlog');
+                const typingAnimation = document.createElement('div');
+                typingAnimation.classList.add('chat-message', 'typing-animation');
+                chatLog.insertBefore(typingAnimation, chatLog.firstChild);
+
+                setTimeout(function() {
+                    chatLog.removeChild(typingAnimation);
+                    sendBotMessage(questions[currentQuestionIndex]);
+                    currentQuestionIndex++;
+                }, 700); // ADD delay
+            }
+        }
+
+        let binarySymptoms = [
+            1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1,
+            0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1,
+            0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1,
+            0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1,
+            0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1,
+            0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1,
+            0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1
+        ];
+        console.log("Questions:", questions.length);
+
+        async function getGptResponse(prompt) {
+            const user_message = [
+                // Content field contains a prompt engineered text that tells OpenAI how to split up its responses for each node
+                { "role": "user", "content": `Respond in a professional manner to the following prompt: ${prompt}` },
+            ];
+
+            const headers = {
+                'Authorization': `Bearer API-KEY`,
+                'Content-Type': 'application/json',
+            };
+
+            const api_endpoint = 'https://api.openai.com/v1/chat/completions';
+
+            const response_openai = await fetch(api_endpoint, { messages: user_message, model: "gpt-3.5-turbo" }, { headers });
+            const openai_json = response_openai.data;
+            return openai_json.choices[0].message.content;
+        }
+
+        async function run() {
+            console.log("Loading model...");
+            const model = await tf.loadGraphModel('model.json');
+            console.log("Model loaded");
+
+            let tensor = tf.tensor2d(newDataPoint, [1, newDataPoint.length]);
+
+            console.log("Making prediction...");
+            let prediction = model.predict(tensor);
+            console.log("Prediction made");
+
+            let predictionArray = prediction.dataSync();
+            let predictionIndex = predictionArray.indexOf(Math.max(...predictionArray));
+
+            // Load the label mapping
+            const response = await fetch('label_mapping.json');
+            const labelMapping = await response.json();
+
+            // Convert the prediction index to the disease string
+            let predictedDisease = labelMapping[predictionIndex];
+
+            console.log(`Prediction: ${predictedDisease}`);
+
+            if(predictedDisease === 'Allergy' || predictedDisease === 'Dimorphic hemmorhoids(piles)' || predictedDisease === 'Urinary tract infection' || predictedDisease === 'Impetigo') {
+                sendBotMessage(`Please see a pharmacist, as your symptoms suggest that you may have ${predictedDisease}.`);
+            } else {
+                sendBotMessage(`Please see a doctor, as your symptoms suggest that you may have ${predictedDisease}.`);
+            }
+        }
+
+    </script>
+</body>
+</html>

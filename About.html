@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TriageRx</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Exo&display=swap');
+
+        body {
+            font-family: 'Exo', sans-serif;
+            background-color: #1B0051;
+            margin: 0;
+            padding: 0;
+            
+        }
+
+        header {
+            position: relative;
+            background-color: #1B0051;
+            padding: 30px;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav li {
+            display: inline;
+            margin-right: 50px;
+        }
+
+        nav a {
+            color: #d2d2d2;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo img {
+            height: 100px;
+        }
+
+        .block {
+            width: calc(100% - 60px);
+            max-width: 1200px;
+            border: 1px solid #B6B4BA;
+            padding: 20px;
+            margin: 30px auto;
+            box-sizing: border-box;
+            color: #B6B4BA;
+        }
+
+        .team-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 30px auto;
+            box-sizing: border-box;
+        }
+        .team-member {
+            text-align: center;
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .team-member .headshot {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .team-member img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            border-radius: 50%;
+        }
+        .team-member h3 {
+            margin: 10px 0;
+            color: #B6B4BA;
+        }
+        .team-member p {
+            color: #B6B4BA;
+        }
+
+        .content-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            width: calc(100% - 60px);
+            max-width: 1200px;
+            margin: 30px auto;
+            box-sizing: border-box;
+            color: #B6B4BA;
+        }
+        .content-text {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+        .content-image img {
+            max-width: 500px;
+            height: auto;
+        }
+
+        .figma-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* viewport height */
+        }
+        .figma-container iframe {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            width: 500px;
+            height: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="TriageRx (1).png" alt="Logo">
+            </div>
+            <ul>
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="About.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="block">
+        <h2>Purpose</h2>
+        <p>In what circumstances do I visit a pharmacist? In what circumstances do I visit a doctor? Is there even a difference? People often find it difficult to differentiate between which medical professional to go to when faced with discomfort. TriageRx aims to remove that uncertainty by performing a thorough triage steering people to the right medical profession, saving the time and resources of both parties. </p>
+    </div>
+    <div class="block">
+        <h2>History</h2>
+        <p>The role of a pharmacist was to distribute prescriptions made by doctors to patients at pharmacies. However, as of June 1, 2023, in British Columbia, patients are now able to receive a diagnosis and prescription from a pharmacist for 21 minor ailments.</p>
+    </div>
+
+    <div class="content-container">
+        <div class="content-text">
+            <h2>Future Steps</h2>
+            <p>TriageRx plans to pair with kiosks located outside all pharmacies in Canada that display TriageRxs symptom-analysis test to determine whether or not pharmaceutical care is required or if redirecting to a doctor is a better alternative. If the analysis concludes pharmaceutical care, a ticket will be printed out for the patient to bring to the pharmacist to receive treatment. This program will also enhance the efficiency of pharmacists by streamlining their workflow and enabling them to allocate their time more effectively to patients in need. With the implementation of these kiosks, patients will undergo a comprehensive symptom-analysis test provided by TriageRx, effectively acting as a preliminary triage process. As a result, individuals seeking consultation with a pharmacist will already have a better understanding of their symptoms and potential treatment options.
+
+                By having this preliminary triage performed through the kiosks, pharmacists can benefit from the reduced number of unnecessary patients. This allows them to focus more on providing specialized care to those they can treat and delivering personalized prescriptions to patients.
+                
+                This program will also be intergrated into pharmacy systems through devices such as iPads, laptops, and computers providing pharmacists with convenient access to diagnostic support. This technology empowers pharmacists to make more accurate and informed diagnoses, ensuring the provision of optimal pharmaceutical care.</p>
+        </div>
+        <div class="content-image">
+            <img src="KioskRenderForWebsite.png" alt="Image description">
+        </div>
+    </div>
+
+
+    <div class="figma-container">
+        <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fb0HnwNUq8VXhzVtK0UaSkx%2FUntitled%3Ftype%3Ddesign%26node-id%3D1-4%26t%3D57N8pEBtsowwJges-1%26scaling%3Dscale-down%26page-id%3D0%253A1%26starting-point-node-id%3D1%253A4%26mode%3Ddesign" allowfullscreen></iframe>
+    </div>
+
+    <div class="team-container">
+        <div class="team-member">
+            <img src="64892c3193e5c-bpfull.png" alt="Sophia Yang">
+            <h3>Sophia Yang</h3>
+            <p>Backend Developer</p>
+            <p>Worked on the machine learning model, LIME, OpenAI API Intergration</p>
+        </div>
+        <div class="team-member">
+            <img src="HackRX headshot 2.jpg" alt="Tiffany Yang">
+            <h3>Tiffany Yang</h3>
+            <p>Frontend Designer</p>
+            <p>Worked on the TriageRx website, TriageRx app prototype, and Blender model of the TriageRx Kiosk</p>
+        </div>
+
+</body>
+</html>

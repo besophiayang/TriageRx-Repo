@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TriageRx</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Exo&display=swap');
+
+        body {
+            font-family: 'Exo', sans-serif;
+            background-color: #1B0051;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1B0051;
+            padding: 30px; /* Increase padding to make the navigation bar thicker */
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav li {
+            display: inline;
+            margin-right: 50px; /* Increase margin to make the tabs further apart */
+        }
+
+        nav a {
+            color: #d2d2d2;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center; /* Center align the logo */
+            align-items: center;
+            flex: 1;
+        }
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo img {
+            height: 100px;
+        }
+        
+        .chatbox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            width: 80%; /* Set width to 80% */
+            max-width: 1150px; /* Set maximum width if needed */
+            height: 500px;
+            border-radius: 10px;
+            overflow-y: auto;
+            opacity: 0.8;
+        }
+
+        .chatbox-content {
+            height: calc(100% - 60px); /* Subtract 60px to account for input field height and padding */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+            padding: 0 15px; /* Add padding of 15px on both sides */
+        }
+
+
+        .chatbox-content::-webkit-scrollbar {
+            width: 6px; /* Set the width of the scrollbar */
+            margin-right: 4px; /* Adjust the margin */
+        }
+
+        .chatbox-content::-webkit-scrollbar-thumb {
+            background-color: #888; /* Set the color of the scrollbar thumb */
+            border-radius: 3px; /* Round the corners of the scrollbar thumb */
+        }
+
+        .input-field {
+            position: relative;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .input-field input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: none;
+            border-radius: 10px; /* Round the corners */
+            outline: none;
+            opacity: 0.9;
+            box-sizing: border-box; /* Include padding in the width calculation */
+        }
+
+
+        .chat-message {
+            margin-top: 10px; /* Add spacing between messages */
+            margin-left: 15px; /* Start messages 15px away from the left side */
+            margin-right: 15px; /* Start messages 15px away from the right side */
+            display: flex;
+            justify-content: flex-end; /* Align user messages to the right */
+        }
+
+        .user-message {
+            text-align: right;
+            background-color: #534769; /* Set the background color to red */
+            color: white; /* Set the text color to white */
+            padding: 10px; /* Add padding to the bubble */
+            border-radius: 10px; /* Round the corners of the bubble */
+            width: fit-content; /* Adjust the width based on the content */
+            max-width: 80%; /* Set maximum width to 80% of the chatbox width */
+            white-space: pre-wrap; /* Preserve white space and wrap long text */
+            word-break: break-word; /* Break long words */
+            margin-left: auto; /* Move the user messages to the right */
+            margin-right: 15px; /* Start messages 15px away from the right side */
+            opacity: 0.7;
+}
+
+
+        .bot-message {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="About.html">About</a></li>
+            </ul>
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="TriageRx (1).png" alt="Logo">
+                    <!-- Replace "logo.png" with the path to your logo image file -->
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="chatbox">
+        <div class="chatbox-content" id="chatlog"></div>
+        <div class="input-field">
+            <input type="text" id="userInput" placeholder="Type your message..." onkeydown="handleKeyPress(event)">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Calculate and set the width of the chatbox dynamically
+        function setChatboxWidth() {
+            const chatbox = document.querySelector('.chatbox');
+            const screenWidth = window.innerWidth;
+            const chatboxWidth = screenWidth * 0.8; // Set width to 80% of the screen width
+            chatbox.style.width = `${chatboxWidth}px`;
+        }
+
+        window.addEventListener('DOMContentLoaded', setChatboxWidth);
+        window.addEventListener('resize', setChatboxWidth);
+
+        function handleKeyPress(event) {
+            if (event.keyCode === 13) {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+
+            if (message !== '') {
+                const chatLog = document.getElementById('chatlog');
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('chat-message', 'user-message');
+                userMessage.textContent = message;
+                chatLog.insertBefore(userMessage, chatLog.firstChild); // Insert new message at the top
+                userInput.value = '';
+                userInput.focus();
+            }
+        }
+    </script>
+</body>
+</html>
